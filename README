@@ -1,0 +1,38 @@
+jack2pcm
+========
+
+Version 0.1, 6 November 2008
+Written by Paul Kelly for Radiomonitor Ltd.
+
+
+Usage
+-----
+
+jack2pcm [-n <name>] [-b <size>] [-xqh] <port1> [<port2>]
+
+   -n <name>        name for this JACK client (default jack2pcm-PID)
+   -b <size>        set ringbuffer to this size in bytes per port (k or M
+                    suffix accepted; default 1M)
+   -x               swap byte order
+ <port1> & <port2>  autoconnect JACK client to these port(s)
+   -q               Don't display progress information
+   -h               display this usage message and exit
+
+
+Overview
+--------
+
+This utility is a simple JACK client that connects to one or more JACK ports
+as specified on the command-line, converts the audio data read from those
+port(s) to signed 16-bit PCM samples and writes it to standard output. When
+more than one port is specified, the samples from the ports are interleaved
+in the output. A ringbuffer is used internally to buffer the real-time JACK
+callback from the sample conversion and output code; the size of this
+ringbuffer may be specified on the command-line. If the -x option is
+specifed, the most and least significant bytes in each 16-bit output sample
+are swapped from the native host order.
+
+--
+paul@stjohnspoint.co.uk
+
+Leeds, November 2008.
