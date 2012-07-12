@@ -1,63 +1,51 @@
-jack2pcm
-========
-
+.TH jack2pcm 1 "" "jack2pcm 0.2.1"
+.SH NAME
+.PP
+jack2pcm - simple JACK client for PCM output
+.br
 Version 0.2.1, 15 December 2008
-Written by Paul Kelly for Radiomonitor Ltd.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-Usage
------
-
+.SH SYNOPSIS
+\fC
+.DS
+.br
 jack2pcm [-n <name>] [-b <size>] [-xqh] <port1> [<port2>]
-
+.br
+.br
    -n <name>        name for this JACK client (default jack2pcm-PID)
-   -b <size>        set ringbuffer to this size in bytes per port (k or M
-                    suffix accepted; default 1M)
+.br
+   -b <size>        set ringbuffer to this size in bytes per port (k or
+.br
+                    M suffix accepted; default 1M)
+.br
    -x               swap byte order
+.br
  <port1> & <port2>  autoconnect JACK client to these port(s)
-   -q               Don't display progress information
+.br
+   -q               Do not display progress information
+.br
    -h               display this usage message and exit
-
-
-Overview
---------
-
+.br
+.DE
+\fR
+.SH DESCRIPTION
+.PP
 This utility is a simple JACK client that connects to one or more JACK ports
 as specified on the command-line, converts the audio data read from those
 port(s) to signed 16-bit PCM samples and writes it to standard output. Any
 samples outside the normal range -1.0/+1.0 are clipped to the minimum/maximum 
 values representable by a signed 16-bit number.
-
+.PP
 When more than one port is specified, the samples from the ports are
 interleaved in the output. A ringbuffer is used internally to buffer the
 real-time JACK callback from the sample conversion and output code; the size
 of this ringbuffer may be specified on the command-line. If the -x option is
 specifed, the most and least significant bytes in each 16-bit output sample
 are swapped from the native host order.
-
-Installation
-------------
-
-The only dependency is JACK itself; an autoconf-based configure script is
-used to detect the necessary compile flags. The following options are
-accepted:
-
-  --with-jack-includes=DIRS
-                          JACK include files are in DIRS
-  --with-jack-libs=DIRS   JACK library files are in DIRS
-
-A typical configure line (Bourne shell syntax) might be:
-
-CFLAGS=-O3 LDFLAGS=-s ./configure --prefix=/usr
-
-Then a simple "make" will compile the program. "make install" will install
-to the specified prefix.
-
---
-paul@stjohnspoint.co.uk
-
+.SH AUTHOR
+.PP
+Paul Kelly (for and on behalf of Radiomonitor Ltd.)
+.br
+\fIpaul@stjohnspoint.co.uk\fR
+.br
+.br
 Belfast, December 2008.

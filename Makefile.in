@@ -1,0 +1,38 @@
+TARGET = jack2pcm
+all: $(TARGET)
+
+CC = @CC@
+CFLAGS = @CFLAGS@
+LDFLAGS = @LDFLAGS@
+
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+BINDIR = @bindir@
+MANDIR = @datarootdir@/man/man1
+
+INCLUDES = @JACKINC@
+LIBS = @JACKLIB@
+
+MANPAGE = jack2pcm.1
+OBJS = jack2pcm.o
+DEPS = 
+
+%.o: %.c $(DEPS)
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
+
+$(TARGET): $(OBJS)
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+install: $(TARGET)
+	-mkdir -p $(BINDIR)
+	$(INSTALL) $(TARGET) $(BINDIR)
+	-mkdir -p $(MANDIR)
+	$(INSTALL_DATA) $(MANPAGE) $(MANDIR)
+
+clean:
+	rm -f $(OBJS) $(TARGET) config.log config.status
+
+distclean: clean
+	rm -f Makefile

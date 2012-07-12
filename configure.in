@@ -1,0 +1,46 @@
+# 
+# Autoconf macros for jack2pcm configure script
+# by Paul Kelly December 2008
+# based on the GRASS configure script
+#
+
+# Turn off annoying/confusing caching
+define([AC_CACHE_LOAD], )
+define([AC_CACHE_SAVE], )
+define([AC_CACHE_VAL], [
+$2
+])
+
+# Initial configuration
+AC_INIT(configure.in)
+AC_PREREQ(2.13)
+AC_PREFIX_DEFAULT(/usr/local)
+
+# Register arguments that the script will accept
+
+LOC_ARG_WITH_INC(jack, JACK)
+LOC_ARG_WITH_LIB(jack, JACK)
+
+# Check for some programs
+
+AC_PROG_CC
+AC_PROG_INSTALL
+
+# Check for JACK
+
+JACKINC=
+JACKLIB=
+
+# With JACK includes directory
+LOC_CHECK_INC_PATH(jack,JACK,JACKINC)  
+LOC_CHECK_INCLUDES(jack/jack.h jack/ringbuffer.h,JACK,$JACKINC)
+
+# With JACK library directory
+LOC_CHECK_LIB_PATH(jack,JACK,JACKLIB)
+LOC_CHECK_LIBS(jack, jack_activate,JACK,$JACKLIB,JACKLIB)
+
+AC_SUBST(JACKINC)
+AC_SUBST(JACKLIB)
+
+
+AC_OUTPUT(Makefile)
