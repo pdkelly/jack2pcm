@@ -7,6 +7,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 #include <sys/types.h>
 #include <unistd.h>
 #include <time.h>
@@ -17,7 +18,7 @@
 #include <jack/ringbuffer.h>
 
 #define PROG_NAME "jack2pcm"
-#define PROG_VERSION "0.1"
+#define PROG_VERSION "0.2"
 
 #define DEFAULT_RINGBUFFER_SIZE 1048576 /* 1 MB */
 #define READ_SAMPLES 128 /* Number of samples per port to read at a time 
@@ -41,6 +42,7 @@ int quiet;
 static void init_jack(struct jack_params *, const char *, size_t);
 static int capture_callback(jack_nframes_t, void *);
 static void shutdown_callback(void *);
+static inline short float_to_short(float);
 static void swap_bytes(char *, size_t);
 
 int main(int argc, char **argv)
@@ -184,7 +186,7 @@ int main(int argc, char **argv)
         {
             int s;
             for(s = 0; s < READ_SAMPLES; s++)
-                params->outbuff[s*params->num_ports + i] = params->inbuff[i][s] * 32768;
+                params->outbuff[s*params->num_ports + i] = float_to_short(params->inbuff[i][s]);
         }
 
         len = params->num_ports * READ_SAMPLES;
@@ -270,7 +272,7 @@ static void init_jack(struct jack_params *params, const char *client_name,
 static int capture_callback(jack_nframes_t nframes, void *data)
 {
     struct jack_params *params = data;
-    size_t to_write = sizeof(jack_default_audio_sample_t) * nframes;
+    size_t to_write = sizeof(float) * nframes;
     int p;
    
     if(!params->ready)
@@ -310,6 +312,22 @@ static void shutdown_callback(void *data)
     /* No need to free memory structures as we're exiting */
 
     exit(0);
+}
+
+/*
+ * float_to_short()
+ * 
+ * Convert float audio samples to signed 16-bit values in such a way
+ * that the range -1.0 to 1.0 translates evenly to -32768 to +32767.
+ */
+static inline short float_to_short(float sample)
+{
+    if(sample >= 1.0)
+        return 32767;
+    else if(sample <= -1.0)
+        return -32768;
+    else
+        return (short)floorf(sample * 32768.f);
 }
 
 /*

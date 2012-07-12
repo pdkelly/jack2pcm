@@ -1,7 +1,7 @@
 jack2pcm
 ========
 
-Version 0.1, 6 November 2008
+Version 0.2, 7 November 2008
 Written by Paul Kelly for Radiomonitor Ltd.
 
 
@@ -24,11 +24,14 @@ Overview
 
 This utility is a simple JACK client that connects to one or more JACK ports
 as specified on the command-line, converts the audio data read from those
-port(s) to signed 16-bit PCM samples and writes it to standard output. When
-more than one port is specified, the samples from the ports are interleaved
-in the output. A ringbuffer is used internally to buffer the real-time JACK
-callback from the sample conversion and output code; the size of this
-ringbuffer may be specified on the command-line. If the -x option is
+port(s) to signed 16-bit PCM samples and writes it to standard output. Any
+samples outside the normal range -1.0/+1.0 are clipped to the minimum/maximum 
+values representable by a signed 16-bit number.
+
+When more than one port is specified, the samples from the ports are
+interleaved in the output. A ringbuffer is used internally to buffer the
+real-time JACK callback from the sample conversion and output code; the size
+of this ringbuffer may be specified on the command-line. If the -x option is
 specifed, the most and least significant bytes in each 16-bit output sample
 are swapped from the native host order.
 
